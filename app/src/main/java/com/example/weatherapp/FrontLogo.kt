@@ -22,11 +22,6 @@ class FrontLogo : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_front_logo)
-        Handler(Looper.getMainLooper()).postDelayed({
-                var intent = Intent(this,MainActivity::class.java)
-            startActivity(intent)
-            finish()
-        },2000)
         mfusedlocation = LocationServices.getFusedLocationProviderClient(this)
         getlastlocation()
     }
@@ -40,10 +35,21 @@ class FrontLogo : AppCompatActivity() {
                     var location: Location ?= task.result
                     if(location == null){
                         Toast.makeText(this,"location is null",Toast.LENGTH_LONG).show()
+                        Toast.makeText(this,"location is found",Toast.LENGTH_LONG).show()
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            var intent = Intent(this,MainActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        },2000)
                     }
                     else{
                         Log.d("location","location found")
                         Toast.makeText(this,"location is found",Toast.LENGTH_LONG).show()
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            var intent = Intent(this,MainActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        },2000)
                     }
                 }
             }
@@ -68,5 +74,18 @@ class FrontLogo : AppCompatActivity() {
 
     private fun grantedPermission(): Boolean {
         return ActivityCompat.checkSelfPermission(this,android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this,android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(requestCode == mycode){
+            if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                getlastlocation()
+            }
+        }
     }
 }
