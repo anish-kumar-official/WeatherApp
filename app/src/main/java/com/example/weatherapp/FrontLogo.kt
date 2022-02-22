@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
+import android.location.LocationRequest
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -14,7 +15,10 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import java.util.*
 
 class FrontLogo : AppCompatActivity() {
     lateinit var mfusedlocation:FusedLocationProviderClient
@@ -35,6 +39,7 @@ class FrontLogo : AppCompatActivity() {
                     var location: Location ?= task.result
                     if(location == null){
                         Toast.makeText(this,"location is null",Toast.LENGTH_LONG).show()
+                        newLocation()
                     }
                     else{
                         Log.d("location","location found")
@@ -55,6 +60,24 @@ class FrontLogo : AppCompatActivity() {
         }
         else {
             requestPermission()
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun newLocation() {
+       var locationRequest = com.google.android.gms.location.LocationRequest()
+        locationRequest.priority = com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = 0
+        locationRequest.fastestInterval = 0
+        locationRequest.numUpdates = 1
+        mfusedlocation = LocationServices.getFusedLocationProviderClient(this)
+        Looper.myLooper()
+            ?.let { mfusedlocation.requestLocationUpdates(locationRequest,locationCallback, it) }
+
+    }
+    private val locationCallback = object:LocationCallback(){
+        override fun onLocationResult(p0: LocationResult) {
+            var lastlocation:Location = p0.lastLocation
         }
     }
 
