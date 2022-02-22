@@ -35,18 +35,14 @@ class FrontLogo : AppCompatActivity() {
                     var location: Location ?= task.result
                     if(location == null){
                         Toast.makeText(this,"location is null",Toast.LENGTH_LONG).show()
-                        Toast.makeText(this,"location is found",Toast.LENGTH_LONG).show()
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            var intent = Intent(this,MainActivity::class.java)
-                            startActivity(intent)
-                            finish()
-                        },2000)
                     }
                     else{
                         Log.d("location","location found")
                         Toast.makeText(this,"location is found",Toast.LENGTH_LONG).show()
                         Handler(Looper.getMainLooper()).postDelayed({
                             var intent = Intent(this,MainActivity::class.java)
+                            intent.putExtra("lat",location.latitude.toString())
+                            intent.putExtra("long",location.longitude.toString())
                             startActivity(intent)
                             finish()
                         },2000)
